@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useAppStore } from '@/store/store';
+import { themes } from '@/styles/design-system';
 import Timer from './Timer';
 import MusicPlayer from './MusicPlayer';
 import ToDoList from './ToDoList';
@@ -13,6 +14,7 @@ import CodeSnippets from './CodeSnippets';
 import DeployChecklist from './DeployChecklist';
 import Pomodoro from './Pomodoro';
 import GoogleSearch from './GoogleSearch';
+import ThemeManager from './ThemeManager';
 
 interface WidgetContentProps {
   widgetId: string;
@@ -27,13 +29,15 @@ export default function WidgetContent({
   onClose,
   initialPosition,
 }: WidgetContentProps) {
-  const { updateWidgetPosition, widgetPositions } = useAppStore();
+  const { updateWidgetPosition, widgetPositions, theme } = useAppStore();
+  const currentTheme = themes[theme];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3 }}
       drag
       dragMomentum={false}
       onDragEnd={(e, info) => {
@@ -50,11 +54,40 @@ export default function WidgetContent({
         y: widgetPositions[widgetId]?.y || initialPosition.y,
       }}
     >
-      <Card className="w-80 p-4 bg-opacity-90 backdrop-blur-lg border border-gray-700 shadow-lg">
+      <Card
+        className="w-80 p-5 rounded-xl shadow-xl"
+        style={{
+          background: currentTheme.cardBg,
+          border: `1px solid ${currentTheme.cardBorder}`,
+          backdropFilter: 'blur(10px)',
+        }}
+      >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">{widgetType}</h2>
-          <Button variant="ghost" onClick={onClose}>
-            ✕
+          <h2
+            className="text-lg font-semibold"
+            style={{ color: currentTheme.text }}
+          >
+            {widgetType}
+          </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="hover:bg-opacity-20 hover:bg-white rounded-full"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke={currentTheme.text}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </Button>
         </div>
         {widgetType === 'Timer' && <Timer widgetId={widgetId} />}
@@ -68,6 +101,7 @@ export default function WidgetContent({
         )}
         {widgetType === 'Pomodoro' && <Pomodoro widgetId={widgetId} />}
         {widgetType === 'GoogleSearch' && <GoogleSearch />}
+        {widgetType === 'ThemeManager' && <ThemeManager />}
       </Card>
     </motion.div>
   );

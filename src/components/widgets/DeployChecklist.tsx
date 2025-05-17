@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useAppStore } from '@/store/store';
+import { themes } from '@/styles/design-system';
 
 interface DeployChecklistProps {
   widgetId: string;
@@ -20,6 +22,8 @@ export default function DeployChecklist({ widgetId }: DeployChecklistProps) {
     { id: '3', label: 'Verificar variáveis de ambiente', checked: false },
     { id: '4', label: 'Realizar deploy', checked: false },
   ]);
+  const { theme } = useAppStore();
+  const currentTheme = themes[theme];
 
   useEffect(() => {
     const savedChecklist = localStorage.getItem(`checklist-${widgetId}`);
@@ -41,14 +45,17 @@ export default function DeployChecklist({ widgetId }: DeployChecklistProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {checklist.map((item) => (
         <div key={item.id} className="flex items-center space-x-2">
           <Checkbox
             checked={item.checked}
             onCheckedChange={() => toggleItem(item.id)}
+            style={{ borderColor: currentTheme.accent }}
           />
-          <span className="text-sm">{item.label}</span>
+          <span className="text-sm" style={{ color: currentTheme.text }}>
+            {item.label}
+          </span>
         </div>
       ))}
     </div>

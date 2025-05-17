@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { useAppStore } from '@/store/store';
+import { themes } from '@/styles/design-system';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface ToDoListProps {
   widgetId: string;
@@ -18,6 +21,8 @@ interface Task {
 export default function ToDoList({ widgetId }: ToDoListProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState('');
+  const { theme } = useAppStore();
+  const currentTheme = themes[theme];
 
   useEffect(() => {
     const savedTasks = localStorage.getItem(`tasks-${widgetId}`);
@@ -53,24 +58,28 @@ export default function ToDoList({ widgetId }: ToDoListProps) {
   };
 
   return (
-    <div>
+    <div className="space-y-4">
       <Input
         placeholder="Adicionar uma tarefa"
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
         onKeyPress={(e) => e.key === 'Enter' && addTask()}
+        className="rounded-lg border"
+        style={{ borderColor: currentTheme.accent, color: currentTheme.text }}
       />
-      <ul className="mt-2 space-y-1 max-h-40 overflow-y-auto">
+      <ul className="space-y-2 max-h-40 overflow-y-auto">
         {tasks.map((task) => (
           <li key={task.id} className="flex items-center space-x-2">
             <Checkbox
               checked={task.completed}
               onCheckedChange={() => toggleTask(task.id)}
+              style={{ borderColor: currentTheme.accent }}
             />
             <span
-              className={`text-sm ${
-                task.completed ? 'line-through text-gray-500' : ''
+              className={`text-sm flex-1 ${
+                task.completed ? 'line-through opacity-60' : ''
               }`}
+              style={{ color: currentTheme.text }}
             >
               {task.text}
             </span>
@@ -78,8 +87,12 @@ export default function ToDoList({ widgetId }: ToDoListProps) {
               variant="ghost"
               size="sm"
               onClick={() => deleteTask(task.id)}
+              className="hover:bg-opacity-20 hover:bg-white rounded-full"
             >
-              🗑️
+              <TrashIcon
+                className="h-4 w-4"
+                style={{ color: currentTheme.accent }}
+              />
             </Button>
           </li>
         ))}

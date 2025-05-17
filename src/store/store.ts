@@ -7,20 +7,20 @@ interface WidgetInstance {
 
 interface AppState {
   activeWidgets: WidgetInstance[];
-  theme: 'dark' | 'light';
+  theme: 'blue' | 'red' | 'green' | 'pink' | 'yellow';
   widgetPositions: { [key: string]: { x: number; y: number } };
   addWidget: (type: string) => void;
   removeWidget: (id: string) => void;
-  toggleTheme: () => void;
+  setTheme: (theme: 'blue' | 'red' | 'green' | 'pink' | 'yellow') => void;
   updateWidgetPosition: (id: string, position: { x: number; y: number }) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
   activeWidgets: [],
-  theme: 'dark',
+  theme: 'blue', 
   widgetPositions: {},
   addWidget: (type) => set((state) => {
-    const id = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // ID único
+    const id = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return {
       activeWidgets: [...state.activeWidgets, { id, type }],
     };
@@ -28,7 +28,7 @@ export const useAppStore = create<AppState>((set) => ({
   removeWidget: (id) => set((state) => ({
     activeWidgets: state.activeWidgets.filter((w) => w.id !== id),
   })),
-  toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+  setTheme: (theme) => set({ theme }),
   updateWidgetPosition: (id, position) =>
     set((state) => ({
       widgetPositions: { ...state.widgetPositions, [id]: position },
