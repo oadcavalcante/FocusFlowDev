@@ -15,13 +15,15 @@ import Pomodoro from './Pomodoro';
 import GoogleSearch from './GoogleSearch';
 
 interface WidgetContentProps {
-  widget: string;
+  widgetId: string;
+  widgetType: string;
   onClose: () => void;
   initialPosition: { x: number; y: number };
 }
 
 export default function WidgetContent({
-  widget,
+  widgetId,
+  widgetType,
   onClose,
   initialPosition,
 }: WidgetContentProps) {
@@ -35,33 +37,37 @@ export default function WidgetContent({
       drag
       dragMomentum={false}
       onDragEnd={(e, info) => {
-        updateWidgetPosition(widget, {
-          x: (widgetPositions[widget]?.x || initialPosition.x) + info.offset.x,
-          y: (widgetPositions[widget]?.y || initialPosition.y) + info.offset.y,
+        updateWidgetPosition(widgetId, {
+          x:
+            (widgetPositions[widgetId]?.x || initialPosition.x) + info.offset.x,
+          y:
+            (widgetPositions[widgetId]?.y || initialPosition.y) + info.offset.y,
         });
       }}
       style={{
         position: 'absolute',
-        x: widgetPositions[widget]?.x || initialPosition.x,
-        y: widgetPositions[widget]?.y || initialPosition.y,
+        x: widgetPositions[widgetId]?.x || initialPosition.x,
+        y: widgetPositions[widgetId]?.y || initialPosition.y,
       }}
     >
       <Card className="w-80 p-4 bg-opacity-90 backdrop-blur-lg border border-gray-700 shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">{widget}</h2>
+          <h2 className="text-lg font-semibold">{widgetType}</h2>
           <Button variant="ghost" onClick={onClose}>
             ✕
           </Button>
         </div>
-        {widget === 'Timer' && <Timer />}
-        {widget === 'MusicPlayer' && <MusicPlayer />}
-        {widget === 'ToDoList' && <ToDoList />}
-        {widget === 'Documentation' && <Documentation />}
-        {widget === 'QuickNotes' && <QuickNotes />}
-        {widget === 'CodeSnippets' && <CodeSnippets />}
-        {widget === 'DeployChecklist' && <DeployChecklist />}
-        {widget === 'Pomodoro' && <Pomodoro />}
-        {widget === 'GoogleSearch' && <GoogleSearch />}
+        {widgetType === 'Timer' && <Timer widgetId={widgetId} />}
+        {widgetType === 'MusicPlayer' && <MusicPlayer widgetId={widgetId} />}
+        {widgetType === 'ToDoList' && <ToDoList widgetId={widgetId} />}
+        {widgetType === 'Documentation' && <Documentation />}
+        {widgetType === 'QuickNotes' && <QuickNotes widgetId={widgetId} />}
+        {widgetType === 'CodeSnippets' && <CodeSnippets widgetId={widgetId} />}
+        {widgetType === 'DeployChecklist' && (
+          <DeployChecklist widgetId={widgetId} />
+        )}
+        {widgetType === 'Pomodoro' && <Pomodoro widgetId={widgetId} />}
+        {widgetType === 'GoogleSearch' && <GoogleSearch />}
       </Card>
     </motion.div>
   );

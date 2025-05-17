@@ -82,9 +82,10 @@ export default function Home() {
         <AnimatePresence>
           {activeWidgets.map((widget, index) => (
             <WidgetContent
-              key={`${widget}-${index}`}
-              widget={widget}
-              onClose={() => removeWidget(widget)}
+              key={widget.id}
+              widgetId={widget.id}
+              widgetType={widget.type}
+              onClose={() => removeWidget(widget.id)}
               initialPosition={{ x: 0, y: index * 10 }}
             />
           ))}
@@ -97,11 +98,7 @@ export default function Home() {
           <Button
             key={widget.name}
             variant="ghost"
-            className={`p-2 rounded-full ${
-              activeWidgets.includes(widget.name)
-                ? 'bg-blue-500 text-white'
-                : 'hover:bg-gray-700'
-            }`}
+            className={`p-2 rounded-full hover:bg-gray-700`}
             onClick={() => {
               if (widget.name === 'ThemeManager') {
                 toggleTheme();

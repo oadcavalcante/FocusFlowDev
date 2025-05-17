@@ -1,28 +1,36 @@
 import { create } from 'zustand';
 
+interface WidgetInstance {
+  id: string;
+  type: string;
+}
+
 interface AppState {
-  activeWidgets: string[];
+  activeWidgets: WidgetInstance[];
   theme: 'dark' | 'light';
   widgetPositions: { [key: string]: { x: number; y: number } };
-  addWidget: (widget: string) => void;
-  removeWidget: (widget: string) => void;
+  addWidget: (type: string) => void;
+  removeWidget: (id: string) => void;
   toggleTheme: () => void;
-  updateWidgetPosition: (widget: string, position: { x: number; y: number }) => void;
+  updateWidgetPosition: (id: string, position: { x: number; y: number }) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
   activeWidgets: [],
   theme: 'dark',
   widgetPositions: {},
-  addWidget: (widget) => set((state) => ({
-    activeWidgets: [...state.activeWidgets, widget],
-  })),
-  removeWidget: (widget) => set((state) => ({
-    activeWidgets: state.activeWidgets.filter((w) => w !== widget),
+  addWidget: (type) => set((state) => {
+    const id = `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // ID único
+    return {
+      activeWidgets: [...state.activeWidgets, { id, type }],
+    };
+  }),
+  removeWidget: (id) => set((state) => ({
+    activeWidgets: state.activeWidgets.filter((w) => w.id !== id),
   })),
   toggleTheme: () => set((state) => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
-  updateWidgetPosition: (widget, position) =>
+  updateWidgetPosition: (id, position) =>
     set((state) => ({
-      widgetPositions: { ...state.widgetPositions, [widget]: position },
+      widgetPositions: { ...state.widgetPositions, [id]: position },
     })),
 }));
