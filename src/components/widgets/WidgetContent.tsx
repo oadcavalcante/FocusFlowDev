@@ -19,6 +19,7 @@ import ThemeManager from './ThemeManager';
 interface WidgetContentProps {
   widgetId: string;
   widgetType: string;
+  displayName: string;
   onClose: () => void;
   initialPosition: { x: number; y: number };
 }
@@ -26,6 +27,7 @@ interface WidgetContentProps {
 export default function WidgetContent({
   widgetId,
   widgetType,
+  displayName,
   onClose,
   initialPosition,
 }: WidgetContentProps) {
@@ -67,7 +69,7 @@ export default function WidgetContent({
             className="text-lg font-semibold"
             style={{ color: currentTheme.text }}
           >
-            {widgetType}
+            {displayName}
           </h2>
           <Button
             variant="ghost"

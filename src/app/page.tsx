@@ -35,19 +35,56 @@ export default function Home() {
   }, [widgetPositions]);
 
   const widgets = [
-    { name: 'Timer', icon: <ClockIcon className="h-6 w-6" /> },
-    { name: 'MusicPlayer', icon: <MusicalNoteIcon className="h-6 w-6" /> },
-    { name: 'ToDoList', icon: <ListBulletIcon className="h-6 w-6" /> },
-    { name: 'Documentation', icon: <DocumentTextIcon className="h-6 w-6" /> },
-    { name: 'QuickNotes', icon: <PencilSquareIcon className="h-6 w-6" /> },
-    { name: 'CodeSnippets', icon: <CodeBracketIcon className="h-6 w-6" /> },
+    {
+      name: 'Timer',
+      displayName: 'Cronômetro',
+      icon: <ClockIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'MusicPlayer',
+      displayName: 'Música para Foco',
+      icon: <MusicalNoteIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'ToDoList',
+      displayName: 'Minhas Tarefas',
+      icon: <ListBulletIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'Documentation',
+      displayName: 'Sobre o FocusFlowDev',
+      icon: <DocumentTextIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'QuickNotes',
+      displayName: 'Notas Rápidas',
+      icon: <PencilSquareIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'CodeSnippets',
+      displayName: 'Meus Snippets',
+      icon: <CodeBracketIcon className="h-6 w-6" />,
+    },
     {
       name: 'DeployChecklist',
+      displayName: 'Checklist de Deploy',
       icon: <ClipboardDocumentCheckIcon className="h-6 w-6" />,
     },
-    { name: 'Pomodoro', icon: <ClockIcon className="h-6 w-6" /> },
-    { name: 'GoogleSearch', icon: <MagnifyingGlassIcon className="h-6 w-6" /> },
-    { name: 'ThemeManager', icon: <PaintBrushIcon className="h-6 w-6" /> },
+    {
+      name: 'Pomodoro',
+      displayName: 'Foco Pomodoro',
+      icon: <ClockIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'GoogleSearch',
+      displayName: 'Pesquisa Rápida',
+      icon: <MagnifyingGlassIcon className="h-6 w-6" />,
+    },
+    {
+      name: 'ThemeManager',
+      displayName: 'Escolher Tema',
+      icon: <PaintBrushIcon className="h-6 w-6" />,
+    },
   ];
 
   return (
@@ -76,15 +113,19 @@ export default function Home() {
       {/* Conteúdo Principal */}
       <main className="flex-1 flex items-center justify-center relative">
         <AnimatePresence>
-          {activeWidgets.map((widget, index) => (
-            <WidgetContent
-              key={widget.id}
-              widgetId={widget.id}
-              widgetType={widget.type}
-              onClose={() => removeWidget(widget.id)}
-              initialPosition={{ x: 0, y: index * 10 }}
-            />
-          ))}
+          {activeWidgets.map((widget, index) => {
+            const widgetInfo = widgets.find((w) => w.name === widget.type);
+            return (
+              <WidgetContent
+                key={widget.id}
+                widgetId={widget.id}
+                widgetType={widget.type}
+                displayName={widgetInfo?.displayName || widget.type}
+                onClose={() => removeWidget(widget.id)}
+                initialPosition={{ x: 0, y: index * 10 }}
+              />
+            );
+          })}
         </AnimatePresence>
       </main>
 
@@ -110,7 +151,6 @@ export default function Home() {
             }}
             onClick={() => {
               if (widget.name === 'ThemeManager') {
-                // O ThemeSelector será exibido em um widget
                 addWidget(widget.name);
               } else {
                 addWidget(widget.name);
