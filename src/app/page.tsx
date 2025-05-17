@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/store/store';
+import { themes, typography } from '@/styles/design-system';
 import WidgetContent from '@/components/widgets/WidgetContent';
-import ThemeSelector from '@/components/ThemeSelector';
 import {
   ClockIcon,
   MusicalNoteIcon,
@@ -21,6 +21,7 @@ import {
 export default function Home() {
   const { activeWidgets, theme, widgetPositions, addWidget, removeWidget } =
     useAppStore();
+  const currentTheme = themes[theme];
 
   useEffect(() => {
     const savedPositions = localStorage.getItem('widgetPositions');
@@ -50,11 +51,26 @@ export default function Home() {
   ];
 
   return (
-    <div className={`min-h-screen flex flex-col theme-${theme}`}>
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        background: currentTheme.background,
+        color: currentTheme.text,
+        fontFamily: typography.fontFamily,
+        transition: 'background 0.3s ease',
+      }}
+    >
       {/* Cabeçalho */}
       <header className="p-6 text-center">
-        <h1 className="font-bold text-3xl">FocusFlowDev</h1>
-        <p className="text-sm opacity-75">Seu Companheiro de Produtividade</p>
+        <h1 className={typography.heading} style={{ color: currentTheme.text }}>
+          FocusFlowDev
+        </h1>
+        <p
+          className={typography.subheading}
+          style={{ color: currentTheme.text }}
+        >
+          Seu Companheiro de Produtividade
+        </p>
       </header>
 
       {/* Conteúdo Principal */}
@@ -76,8 +92,8 @@ export default function Home() {
       <footer
         className="p-4 flex justify-center gap-3 rounded-t-2xl shadow-lg"
         style={{
-          background: 'var(--theme-card-bg)',
-          borderTop: '1px solid var(--theme-card-border)',
+          background: currentTheme.cardBg,
+          borderTop: `1px solid ${currentTheme.cardBorder}`,
           backdropFilter: 'blur(10px)',
         }}
       >
@@ -87,13 +103,14 @@ export default function Home() {
             variant="ghost"
             className="p-3 rounded-full transition-all duration-300 hover:scale-110"
             style={{
-              color: 'var(--theme-text)',
+              color: currentTheme.text,
               backgroundColor: activeWidgets.some((w) => w.type === widget.name)
-                ? 'var(--theme-accent)'
+                ? currentTheme.accent
                 : 'transparent',
             }}
             onClick={() => {
               if (widget.name === 'ThemeManager') {
+                // O ThemeSelector será exibido em um widget
                 addWidget(widget.name);
               } else {
                 addWidget(widget.name);
